@@ -21,7 +21,7 @@ let importantEnd = chalk.red(
   "----------------------------------------------------------------------"
 );
 
-function showNonLatestTagWarning(tag?: string, preState?: PreState) {
+function showNonLatestTagWarning(tag?: string | false, preState?: PreState) {
   warn(importantSeparator);
   if (preState) {
     warn(
@@ -32,6 +32,8 @@ function showNonLatestTagWarning(tag?: string, preState?: PreState) {
           "latest"
         )}`
     );
+  } else if (tag === false) {
+    warn(`Packages will be released without additional tag`);
   } else if (tag !== "latest") {
     warn(`Packages will be released under the ${tag} tag`);
   }
@@ -40,10 +42,10 @@ function showNonLatestTagWarning(tag?: string, preState?: PreState) {
 
 export default async function publish(
   cwd: string,
-  { otp, tag, gitTag = true }: { otp?: string; tag?: string; gitTag?: boolean },
+  { otp, tag, gitTag = true }: { otp?: string; tag?: string | false; gitTag?: boolean },
   config: Config
 ) {
-  const releaseTag = tag && tag.length > 0 ? tag : undefined;
+  const releaseTag = (tag && tag.length > 0) || tag === false ? tag : undefined;
   let preState = await readPreState(cwd);
 
   if (releaseTag && preState && preState.mode === "pre") {
@@ -52,9 +54,7 @@ export default async function publish(
     throw new ExitError(1);
   }
 
-  if (releaseTag || preState) {
-    showNonLatestTagWarning(tag, preState);
-  }
+  showNonLatestTagWarning(tag, preState);
 
   const { packages, tool } = await getPackages(cwd);
 

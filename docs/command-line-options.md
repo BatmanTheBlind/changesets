@@ -5,7 +5,7 @@ The command line for changesets is the main way of interacting with it. There ar
 - init
 - add [--empty][--open]
 - version [--ignore, --snapshot]
-- publish [--otp=code, --tag]
+- publish [--otp=code, --tag | --no-tag]
 - status [--since=master --verbose --output=JSON_FILE.json]
 - pre [exit|enter {tag}]
 - tag
@@ -108,6 +108,8 @@ Because this command assumes that the last commit is the release commit, you sho
 `--otp={token}` - allows you to provide an npm one-time password if you have auth and writes enabled on npm. The CLI also prompts for the OTP if it's not provided with the --otp option.
 
 `--tag TAGNAME` - for packages that are published, the chosen tag will be used instead of `latest`, allowing you to publish changes intended for testing and validation, not main consumption. This will most likely be used with [snapshot releases](./snapshot-releases.md).
+
+`--no-tag` - allows you to disable `latest` tag on publish. It is usefull for private repository where the additional tagging is handle by the repository itself or by another layer of your CI flow. You can not use `--tag` and `--no-tag` at the same time.
 
 ### Git Tags
 

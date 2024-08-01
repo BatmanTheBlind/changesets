@@ -24,12 +24,14 @@ export type PublishedResult = {
   published: boolean;
 };
 
-function getReleaseTag(pkgInfo: PkgInfo, preState?: PreState, tag?: string) {
+function getReleaseTag(pkgInfo: PkgInfo, preState?: PreState, tag?: string | false) {
   if (tag) return tag;
 
   if (preState !== undefined && pkgInfo.publishedState !== "only-pre") {
     return preState.tag;
   }
+
+  if (tag === false) return undefined;
 
   return "latest";
 }
@@ -84,7 +86,7 @@ export default async function publishPackages({
   access: AccessType;
   otp?: string;
   preState: PreState | undefined;
-  tag?: string;
+  tag?: string | false;
 }) {
   const packagesByName = new Map(packages.map((x) => [x.packageJson.name, x]));
   const publicPackages = packages.filter((pkg) => !pkg.packageJson.private);
@@ -119,7 +121,7 @@ async function publishAPackage(
   pkg: Package,
   access: AccessType,
   twoFactorState: TwoFactorState,
-  tag: string
+  tag?: string
 ): Promise<PublishedResult> {
   const { name, version, publishConfig } = pkg.packageJson;
   info(

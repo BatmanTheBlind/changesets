@@ -54,7 +54,7 @@ if (parsed.help && args.length === 1) {
     init
     add [--empty] [--open]
     version [--ignore] [--snapshot <?name>] [--snapshot-prerelease-template <template>]
-    publish [--tag <name>] [--otp <code>] [--no-git-tag]
+    publish [--tag <name> | --no-tag] [--otp <code>] [--no-git-tag]
     status [--since <branch>] [--verbose] [--output JSON_FILE.json]
     pre <enter|exit> <tag>
     tag

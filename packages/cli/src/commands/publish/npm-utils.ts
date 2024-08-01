@@ -15,7 +15,7 @@ interface PublishOptions {
   cwd: string;
   publishDir: string;
   access: AccessType;
-  tag: string;
+  tag?: string;
 }
 
 const npmRequestLimit = pLimit(40);
@@ -167,7 +167,10 @@ async function internalPublish(
 ): Promise<{ published: boolean }> {
   let publishTool = await getPublishTool(opts.cwd);
   let publishFlags = opts.access ? ["--access", opts.access] : [];
-  publishFlags.push("--tag", opts.tag);
+
+  if (opts.tag) {
+    publishFlags.push("--tag", opts.tag);
+  }
 
   if ((await twoFactorState.isRequired) && !isCI) {
     let otpCode = await getOtpCode(twoFactorState);
